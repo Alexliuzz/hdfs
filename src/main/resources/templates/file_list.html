@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>文件列表</title>
+    <!-- Meta -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/webjars/layui/2.4.5/css/layui.css" media="all">
+    <script type="text/javascript" src="/webjars/layui/2.4.5/layui.js"></script>
+
+</head>
+<body style="padding: 30px">
+<div class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">文件名称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="fileName" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label">文件描述</label>
+        <div class="layui-input-inline">
+            <input type="text" name="fileDesc" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label">时间范围</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input" id="timeRange" placeholder="yyyy-MM-dd - yyyy-MM-dd">
+        </div>
+        <button class="layui-btn" id="searchBtn">
+            <i class="layui-icon layui-icon-search" style="font-size: 14px"></i> 搜索
+        </button>
+        <button class="layui-btn layui-btn-normal" id="uploadBtn" style="float: right">
+            <i class="layui-icon layui-icon-upload" style="font-size: 14px"></i> 文件上传
+        </button>
+    </div>
+</div>
+
+<table class="layui-hide" id="fileTable" lay-filter="fileTable"></table>
+
+<script type="text/html" id="operationTpl">
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="watch">查看</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="update">修改</a>
+    <a class="layui-btn layui-btn-xs" lay-event="download">下载</a>
+    <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
+</script>
+
+<script type="text/javascript">
+    layui.use(['table', 'jquery', 'layer', 'laydate', 'upload'], function () {
+        var table = layui.table,
+            $ = layui.jquery,
+            layer = layui.layer,
+            laydate = layui.laydate,
+            upload = layui.upload;
+
+        //日期范围
+        laydate.render({
+            elem: '#timeRange',
+            range: true
+        });
+
+        table.render({
+            elem: '#fileTable',
+            url: '/admin/info/doctor/list',
+            cols: [
+                [
+                    {field: 'fileName', title: '文件名称', width: 100, sort: true},
+                    {field: 'fileType', title: '文件类型', width: 80, sort: true},
+                    {field: 'fileDesc', title: '文件描述'},
+                    {field: 'creatTime', title: '创建时间', width: 80},
+                    {title: '操作', width: 150, align: 'center', toolbar: '#operationTpl'}
+                ]
+            ],
+            where: {
+                fileName: $("[name='fileName']").val(),
+                fileDesc: $("[name='fileDesc']").val(),
+                timeRange: $("[name='timeRange']").val()
+            },
+            page: true
+        });
+
+        $('#searchBtn').on('click', function () {
+            table.reload("fileTable", {
+                page: {
+                    curr: 1
+                },
+                where: {
+                    fileName: $("[name='fileName']").val(),
+                    fileDesc: $("[name='fileDesc']").val(),
+                    timeRange: $("[name='timeRange']").val()
+                }
+            })
+        });
+
+        table.on("tool(fileTable)", function (obj) {
+            //var userId = obj.data.userId;
+            if (obj.event === "watch") {
+                layer.alert("查看文件")
+            } else if (obj.event === "update") {
+                layer.alert("下载文件")
+            } else if (obj.event === "download") {
+                layer.alert("下载文件")
+            } else if (obj.event === "delete") {
+                layer.alert("下载文件")
+            }
+            return false;
+        })
+    })
+</script>
+</body>
+</html>
