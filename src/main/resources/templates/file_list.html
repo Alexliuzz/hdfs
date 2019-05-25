@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <title>文件列表</title>
     <!-- Meta -->
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <link rel="stylesheet" href="/webjars/layui/2.4.5/css/layui.css" media="all">
     <script type="text/javascript" src="/webjars/layui/2.4.5/layui.js"></script>
-
 </head>
 <body style="padding: 30px">
 <div class="layui-form">
@@ -43,13 +43,16 @@
     <a class="layui-btn layui-btn-xs" lay-event="delete">删除</a>
 </script>
 
+<script type="text/html" id="timeTpl">
+    {{ d.createTime.substring(0,10) }}
+</script>
+
 <script type="text/javascript">
-    layui.use(['table', 'jquery', 'layer', 'laydate', 'upload'], function () {
-        var table = layui.table,
-            $ = layui.jquery,
-            layer = layui.layer,
-            laydate = layui.laydate,
-            upload = layui.upload;
+    layui.use(['table', 'jquery', 'layer', 'laydate'], function () {
+        var table = layui.table
+        , $ = layui.jquery
+        , layer = layui.layer
+        , laydate = layui.laydate;
 
         //日期范围
         laydate.render({
@@ -59,14 +62,16 @@
 
         table.render({
             elem: '#fileTable',
-            url: '/admin/info/doctor/list',
+            url: '/file/list',
             cols: [
                 [
-                    {field: 'fileName', title: '文件名称', width: 100, sort: true},
-                    {field: 'fileType', title: '文件类型', width: 80, sort: true},
+                    {field: 'fileName', title: '名称', width: 180, sort: true},
+                    {field: 'fileType', title: '类型', width: 180, sort: true},
                     {field: 'fileDesc', title: '文件描述'},
-                    {field: 'creatTime', title: '创建时间', width: 80},
-                    {title: '操作', width: 150, align: 'center', toolbar: '#operationTpl'}
+                    {field: 'fileSize', title: '大小', width: 180},
+                    {field: 'fileAuthor', title: '作者', width: 180},
+                    {field: 'createTime', title: '创建时间', width: 180, templet:'#timeTpl'},
+                    {title: '操作', width: 240, align: 'center', toolbar: '#operationTpl'}
                 ]
             ],
             where: {
@@ -90,16 +95,25 @@
             })
         });
 
+        $('#uploadBtn').on('click',function () {
+           layer.open({
+               type: 2
+               ,title: '文件上传'
+               ,area: ['460px', '320px']
+               ,content: '/file_upload'
+           })
+        });
+
         table.on("tool(fileTable)", function (obj) {
             //var userId = obj.data.userId;
             if (obj.event === "watch") {
                 layer.alert("查看文件")
             } else if (obj.event === "update") {
-                layer.alert("下载文件")
+                layer.alert("修改文件")
             } else if (obj.event === "download") {
                 layer.alert("下载文件")
             } else if (obj.event === "delete") {
-                layer.alert("下载文件")
+                layer.alert("删除文件")
             }
             return false;
         })

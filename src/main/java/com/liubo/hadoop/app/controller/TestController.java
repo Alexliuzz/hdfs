@@ -1,4 +1,4 @@
-package com.liubo.hadoop.controller;
+package com.liubo.hadoop.app.controller;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
@@ -8,8 +8,6 @@ import org.apache.hadoop.io.IOUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URI;
 
