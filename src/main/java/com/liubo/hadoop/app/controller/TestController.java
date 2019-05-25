@@ -1,5 +1,6 @@
 package com.liubo.hadoop.app.controller;
 
+import com.liubo.hadoop.app.response.Response;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -13,7 +14,7 @@ import java.net.URI;
 
 @RestController
 @RequestMapping
-public class TestController {
+public class TestController extends BaseController {
 
     static Configuration conf = new Configuration(true);
     static {
@@ -25,24 +26,6 @@ public class TestController {
     public String test(@PathVariable("name") String name) {
         String sRet = "liubo" + name;
         return sRet;
-    }
-
-    @PostMapping("upload")
-    public String upload(@RequestParam("file") MultipartFile file) throws IOException {
-        if (file.isEmpty()) {
-            return "上传失败，请选择文件";
-        }
-
-        String fileName = file.getOriginalFilename();
-        InputStream in = file.getInputStream();
-        Configuration configuration = new Configuration();
-        String sFile = "hdfs://192.168.95.131:9000/user/" + fileName;
-        FileSystem fileSystem = FileSystem.get(URI.create(sFile), configuration);
-
-        OutputStream out = fileSystem.create(new Path(sFile), () -> System.out.print("."));
-
-        IOUtils.copyBytes(in, out, 4096, true);
-        return "成功";
     }
 
     @GetMapping("search")

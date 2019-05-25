@@ -10,7 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -34,5 +36,15 @@ public class FileInfoService {
         PageInfo<FileInfo> pageInfo = PageInfo.of(fileInfoList);
         log.debug("文件查询，返回结果：{}", JSON.toJSONString(pageInfo));
         return pageInfo;
+    }
+
+    public void saveFile(MultipartFile file){
+        FileInfo fileInfo = new FileInfo();
+        fileInfo.setFileNo(new Date().toString());
+        fileInfo.setFileName(file.getOriginalFilename());
+        fileInfo.setFileSize(file.getSize());
+        fileInfo.setFileType(file.getContentType());
+        fileInfo.setFileAuthor("刘博zzz");
+        fileInfoMapper.insertSelective(fileInfo);
     }
 }

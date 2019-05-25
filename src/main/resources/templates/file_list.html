@@ -50,9 +50,9 @@
 <script type="text/javascript">
     layui.use(['table', 'jquery', 'layer', 'laydate'], function () {
         var table = layui.table
-        , $ = layui.jquery
-        , layer = layui.layer
-        , laydate = layui.laydate;
+            , $ = layui.jquery
+            , layer = layui.layer
+            , laydate = layui.laydate;
 
         //日期范围
         laydate.render({
@@ -70,7 +70,7 @@
                     {field: 'fileDesc', title: '文件描述'},
                     {field: 'fileSize', title: '大小', width: 180},
                     {field: 'fileAuthor', title: '作者', width: 180},
-                    {field: 'createTime', title: '创建时间', width: 180, templet:'#timeTpl'},
+                    {field: 'createTime', title: '创建时间', width: 180, templet: '#timeTpl'},
                     {title: '操作', width: 240, align: 'center', toolbar: '#operationTpl'}
                 ]
             ],
@@ -82,7 +82,7 @@
             page: true
         });
 
-        $('#searchBtn').on('click', function () {
+        function tableReload() {
             table.reload("fileTable", {
                 page: {
                     curr: 1
@@ -93,15 +93,22 @@
                     timeRange: $("[name='timeRange']").val()
                 }
             })
+        }
+
+        $('#searchBtn').on('click', function () {
+            tableReload();
         });
 
-        $('#uploadBtn').on('click',function () {
-           layer.open({
-               type: 2
-               ,title: '文件上传'
-               ,area: ['460px', '320px']
-               ,content: '/file_upload'
-           })
+        $('#uploadBtn').on('click', function () {
+            layer.open({
+                type: 2
+                , title: '文件上传'
+                , area: ['460px', '320px']
+                , content: '/file_upload'
+                , end: function () {
+                    tableReload();
+                }
+            })
         });
 
         table.on("tool(fileTable)", function (obj) {

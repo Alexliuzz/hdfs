@@ -25,5 +25,6 @@
     <if test="fileName != null and fileName != ''">
       and file_name like #{fileName,jdbcType=VARCHAR}
     </if>
+    order by create_time desc
   </select>
 </mapper>
