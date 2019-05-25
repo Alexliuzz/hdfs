@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd"[]>
+<generatorConfiguration>
+
+    <!--defaultModelType flat 该模型为每一张表只生成一个实体类。这个实体类包含表中的所有字段。 conditional 默认值,与hierarchical模型相似,除了如果一个实体类只包含一个字段,则不会单独生成此实体类。因此,如果一个表的主键只有一个字段,那么不会为该字段生成单独的实体类,会将该字段合并到基本实体类中。
+        hierarchical 如果表有主键,那么该模型会产生一个单独的主键实体类,如果表还有BLOB字段，则会为表生成一个包含所有BLOB字段的单独的实体类,然后为所有其他的字段生成一个单独的实体类。 -->
+    <context id="ims" targetRuntime="MyBatis3" defaultModelType="flat">
+
+        <!--example like插件 -->
+        <plugin type="org.mybatis.generator.plugins.CaseInsensitiveLikePlugin"/>
+        <!--lombok mybatis插件-->
+        <plugin type="com.liubo.hadoop.dao.generator.LombokPlugin"/>
+        <!--mapper 插件-->
+        <plugin type="com.liubo.hadoop.dao.generator.MapperAnnotationPlugin"/>
+        <plugin type="com.liubo.hadoop.dao.generator.DocPlugin"/>
+
+        <commentGenerator>
+            <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+
+        <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://122.143.21.106:3306/hospital_per?characterEncoding=utf-8"
+                        userId="root" password="sysadmin">
+            <!--识别主键-->
+            <property name="useInformationSchema" value="true"/>
+        </jdbcConnection>
+
+
+        <!-- forceBigDecimals：默认是false 是否强制使用BigDecimal来表示所有的十进制和数值字段 -->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <!--targetProject如使用绝对地址：D:\file\workspace\git_projects\ims\ims-dao\src\main\java\-->
+        <javaModelGenerator
+                targetPackage="com.liubo.hadoop.dao.entity"
+                targetProject="D:\hdfs\src\main\java\">
+            <property name="enableSubPackages" value="false"/>
+            <property name="trimStrings" value="false"/>
+            <property name="constructorBased" value="false"/>
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="mapper"
+                         targetProject="D:\hdfs\src\main\resources\">
+            <property name="enableSubPackages" value="false"/>
+        </sqlMapGenerator>
+
+        <!--type="XMLMAPPER" 生成xml文件 -->
+        <!--type="ANNOTATEDMAPPER",生成annotated,SqlProvider注解方法会被XML替代 -->
+        <!--type="MIXEDMAPPER",生成annotatedXML和注解的混合形式 -->
+        <javaClientGenerator
+                targetPackage="com.liubo.hadoop.dao.mapper"
+                targetProject="D:\hdfs\src\main\java\"
+                type="XMLMAPPER">
+            <property name="enableSubPackages" value="false"/>
+        </javaClientGenerator>
+
+        <table tableName="order_share" enableInsert="true"
+               enableCountByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" enableUpdateByExample="false"
+               selectByExampleQueryId="false">
+            <property name="useActualColumnNames" value="false"/>
+        </table>
+    </context>
+</generatorConfiguration>

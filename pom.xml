@@ -16,6 +16,11 @@
 
 	<properties>
 		<java.version>1.8</java.version>
+
+		<hadoop-version>2.7.3</hadoop-version>
+		<mybatis-generator-version>1.3.7</mybatis-generator-version>
+		<pagehelper-version>1.2.10</pagehelper-version>
+		<layui-version>2.4.5</layui-version>
 	</properties>
 
 	<dependencies>
@@ -46,7 +51,7 @@
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-client</artifactId>
-			<version>2.7.3</version>
+			<version>${hadoop-version}</version>
 		</dependency>
 
 		<dependency>
@@ -64,7 +69,29 @@
 		<dependency>
 			<groupId>org.webjars</groupId>
 			<artifactId>layui</artifactId>
-			<version>2.4.5</version>
+			<version>${layui-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mybatis.generator</groupId>
+			<artifactId>mybatis-generator-core</artifactId>
+			<version>${mybatis-generator-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper-spring-boot-starter</artifactId>
+			<version>${pagehelper-version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 		</dependency>
 
     </dependencies>
