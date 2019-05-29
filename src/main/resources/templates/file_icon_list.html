@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件列表</title>
+    <!-- Meta -->
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="stylesheet" href="/webjars/layui/2.4.5/css/layui.css" media="all">
+    <script type="text/javascript" src="/webjars/layui/2.4.5/layui.js"></script>
+</head>
+<body style="padding: 30px">
+<div class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">文件名称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="fileName" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label">文件描述</label>
+        <div class="layui-input-inline">
+            <input type="text" name="fileDesc" autocomplete="off" class="layui-input">
+        </div>
+        <label class="layui-form-label">时间范围</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input" id="timeRange" placeholder="yyyy-MM-dd - yyyy-MM-dd">
+        </div>
+        <button class="layui-btn" id="searchBtn">
+            <i class="layui-icon layui-icon-search" style="font-size: 14px"></i> 搜索
+        </button>
+        <button class="layui-btn layui-btn-normal" id="uploadBtn" style="float: right">
+            <i class="layui-icon layui-icon-upload" style="font-size: 14px"></i> 文件上传
+        </button>
+    </div>
+</div>
+
+<div id="fileList"></div>
+
+</body>
+</html>

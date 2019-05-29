@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class PageController {
 
     @RequestMapping("/")
-    public String hello(){
-        return "hello";
+    public String index(){
+        return "file_table_list";
     }
 
     @RequestMapping("{page}")
-    public String liubo(@PathVariable("page") String page){
+    public String forwardPage(@PathVariable("page") String page){
         return page;
     }
 
