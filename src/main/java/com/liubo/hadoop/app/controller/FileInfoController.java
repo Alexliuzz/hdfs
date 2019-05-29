@@ -27,10 +27,10 @@ public class FileInfoController extends BaseController {
     FileInfoService fileInfoService;
 
     @GetMapping("list")
-    public Response<FileInfoResponse> getFileList(FileQueryRequest request){
-        PageInfo<FileInfo> pageInfo = fileInfoService.getByCondition(request.getFileName(),request.getPage(),request.getLimit());
+    public Response<FileInfoResponse> getFileList(FileQueryRequest request) {
+        PageInfo<FileInfo> pageInfo = fileInfoService.getByCondition(request.getFileName(), request.getPage(), request.getLimit());
         return Response.<FileInfoResponse>builder().code(0)
-                .data(transferListType(pageInfo.getList(),FileInfoResponse.class))
+                .data(transferListType(pageInfo.getList(), FileInfoResponse.class))
                 .count(pageInfo.getTotal())
                 .build();
     }
@@ -49,6 +49,16 @@ public class FileInfoController extends BaseController {
         OutputStream out = fileSystem.create(new Path(sFile), () -> System.out.print("."));
         fileInfoService.saveFile(file);
         IOUtils.copyBytes(in, out, 4096, true);
+        return Response.builder().msg("成功").build();
+    }
+
+    @PostMapping("testUpload")
+    public Response testUpload(@RequestParam("file") MultipartFile file) throws IOException {
+        if (file.isEmpty()) {
+            return Response.builder().msg("失败").build();
+        }
+
+        fileInfoService.saveFile(file);
         return Response.builder().msg("成功").build();
     }
 }
