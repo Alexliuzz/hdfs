@@ -53,7 +53,7 @@ public class FileInfoController extends BaseController {
     }
 
     @PostMapping("testUpload")
-    public Response testUpload(@RequestParam("file") MultipartFile file) throws IOException {
+    public Response testUpload(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
             return Response.builder().msg("失败").build();
         }
