@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/webjars/layui/2.4.5/css/layui.css" media="all">
     <script type="text/javascript" src="/webjars/layui/2.4.5/layui.js"></script>
 </head>
-<body style="padding: 30px">
+<body>
 <div class="layui-form">
     <div class="layui-form-item">
         <label class="layui-form-label">文件名称</label>
@@ -26,15 +26,20 @@
             <input type="text" class="layui-input" id="timeRange" placeholder="yyyy-MM-dd - yyyy-MM-dd">
         </div>
         <button class="layui-btn" id="searchBtn">
-            <i class="layui-icon layui-icon-search" style="font-size: 14px"></i> 搜索
-        </button>
-        <button class="layui-btn layui-btn-normal" id="uploadBtn" style="float: right">
-            <i class="layui-icon layui-icon-upload" style="font-size: 14px"></i> 文件上传
+            <i class="layui-icon layui-icon-search"></i> 搜索
         </button>
     </div>
 </div>
 
 <table class="layui-hide" id="fileTable" lay-filter="fileTable"></table>
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm layui-btn-normal" lay-event="uploadBtn">
+            <i class="layui-icon layui-icon-upload"></i> 文件上传
+        </button>
+    </div>
+</script>
 
 <script type="text/html" id="operationTpl">
     <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="watch">查看</a>
@@ -63,14 +68,15 @@
         table.render({
             elem: '#fileTable',
             url: '/file/list',
+            toolbar: '#toolbarDemo',
             cols: [
                 [
                     {field: 'fileName', title: '名称', width: 180, sort: true},
-                    {field: 'fileType', title: '类型', width: 180, sort: true},
+                    {field: 'fileType', title: '类型', width: 120, sort: true},
                     {field: 'fileDesc', title: '文件描述'},
-                    {field: 'fileSize', title: '大小', width: 180},
-                    {field: 'fileAuthor', title: '作者', width: 180},
-                    {field: 'createTime', title: '创建时间', width: 180, templet: '#timeTpl'},
+                    {field: 'fileSize', title: '大小', width: 120},
+                    {field: 'fileAuthor', title: '作者', width: 120},
+                    {field: 'createTime', title: '创建时间', width: 120, templet: '#timeTpl'},
                     {title: '操作', width: 240, align: 'center', toolbar: '#operationTpl'}
                 ]
             ],
@@ -99,16 +105,19 @@
             tableReload();
         });
 
-        $('#uploadBtn').on('click', function () {
-            layer.open({
-                type: 2
-                , title: '文件上传'
-                , area: ['460px', '320px']
-                , content: '/file_upload'
-                , end: function () {
-                    tableReload();
-                }
-            })
+        table.on('toolbar(fileTable)', function(obj) {
+            if(obj.event === 'uploadBtn'){
+                debugger;
+                layer.open({
+                    type: 2
+                    , title: '文件上传'
+                    , area: ['460px', '320px']
+                    , content: '/file_upload'
+                    , end: function () {
+                        tableReload();
+                    }
+                })
+            }
         });
 
         table.on("tool(fileTable)", function (obj) {
