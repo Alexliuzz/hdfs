@@ -9,6 +9,11 @@
 
     <link rel="stylesheet" href="/webjars/layui/2.4.5/css/layui.css" media="all">
     <script type="text/javascript" src="/webjars/layui/2.4.5/layui.js"></script>
+    <style>
+        .display {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
 <div class="layui-form">
@@ -28,10 +33,18 @@
         <button class="layui-btn" id="searchBtn">
             <i class="layui-icon layui-icon-search"></i> 搜索
         </button>
+        <div class="layui-btn-group" style="float: right">
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-normal" id="list">列表</button>
+            <button type="button" class="layui-btn layui-btn-sm layui-btn-primary" id="icon">图标</button>
+        </div>
     </div>
 </div>
 
-<table class="layui-hide" id="fileTable" lay-filter="fileTable"></table>
+<div id="fileList">
+    <table class="layui-hide" id="fileTable" lay-filter="fileTable"></table>
+</div>
+
+<div id="fileIcon" class="display layui-row"></div>
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
@@ -52,18 +65,42 @@
     {{ d.createTime.substring(0,10) }}
 </script>
 
+<script type="text/html" id="fileIconTpl">
+    {{# layui.each(d.data, function(index, item) { }}
+    <div class="layui-col-xs3" style="margin-top: 10px;text-align: center">
+        <img src="/img/icon/pdf.png" alt="fileIcon">
+        <h3>{{ item.fileName }}</h3>
+    </div>
+    {{# }) }}
+</script>
+
 <script type="text/javascript">
-    layui.use(['table', 'jquery', 'layer', 'laydate'], function () {
+    layui.use(['table', 'jquery', 'layer', 'laydate', 'laytpl'], function () {
         var table = layui.table
             , $ = layui.jquery
             , layer = layui.layer
-            , laydate = layui.laydate;
+            , laydate = layui.laydate
+            , laytpl = layui.laytpl;
+
+        var fileIconTpl = document.getElementById('fileIconTpl').innerHTML,
+            fileIcon = document.getElementById('fileIcon');
+
+        if (null == sessionStorage.getItem("showType")) {
+            sessionStorage.setItem("showType", "list");
+        }
 
         //日期范围
         laydate.render({
             elem: '#timeRange',
             range: true
         });
+
+        if(sessionStorage.getItem("showType") === "list") {
+            setListShow();
+        }else {
+            setIconShow();
+            iconReload();
+        }
 
         table.render({
             elem: '#fileTable',
@@ -101,13 +138,58 @@
             })
         }
 
+        function iconReload() {
+            var fileName = $("[name='fileName']").val()
+                , fileDesc = $("[name='fileDesc']").val()
+                , timeRange = $("[name='timeRange']").val();
+            $.get("/file/list?fileName=" + fileName + "&fileDesc=" + fileDesc + "&timeRange=" + timeRange, function (res) {
+                if (res.code !== 0) {
+                    layer.alert(res.msg);
+                } else {
+                    laytpl(fileIconTpl).render(res, function (html) {
+                        fileIcon.innerHTML = html;
+                    });
+                }
+            })
+        }
+
         $('#searchBtn').on('click', function () {
+            var showType = sessionStorage.getItem("showType");
+            if (showType === "list") {
+                tableReload();
+            } else if (showType === "icon") {
+                iconReload();
+            }
+        });
+
+        $('#list').on('click', function () {
+            setListShow();
             tableReload();
         });
 
-        table.on('toolbar(fileTable)', function(obj) {
-            if(obj.event === 'uploadBtn'){
-                debugger;
+        $('#icon').on('click', function () {
+            setIconShow();
+            iconReload();
+        });
+
+        function setListShow(){
+            sessionStorage.setItem("showType", "list");
+            $('#list').removeClass('layui-btn-primary').addClass('layui-btn-normal');
+            $('#icon').removeClass('layui-btn-normal').addClass('layui-btn-primary');
+            $('#fileIcon').addClass('display');
+            $('#fileList').removeClass('display');
+        }
+
+        function setIconShow(){
+            sessionStorage.setItem("showType", "icon");
+            $('#icon').removeClass('layui-btn-primary').addClass('layui-btn-normal');
+            $('#list').removeClass('layui-btn-normal').addClass('layui-btn-primary');
+            $('#fileIcon').removeClass('display');
+            $('#fileList').addClass('display');
+        }
+
+        table.on('toolbar(fileTable)', function (obj) {
+            if (obj.event === 'uploadBtn') {
                 layer.open({
                     type: 2
                     , title: '文件上传'
