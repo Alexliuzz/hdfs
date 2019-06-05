@@ -44,7 +44,7 @@ public class FileInfoService {
         fileInfo.setFileName(file.getOriginalFilename());
         fileInfo.setFileSize(file.getSize());
         fileInfo.setFileType(getExtensionName(file.getOriginalFilename()));
-        fileInfo.setFileAuthor("刘博zzz");
+        fileInfo.setFileAuthor("admin");
         fileInfoMapper.insertSelective(fileInfo);
     }
 
