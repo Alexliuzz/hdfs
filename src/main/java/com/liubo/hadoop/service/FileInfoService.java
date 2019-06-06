@@ -15,6 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author baoxiaodong
+ */
 @Slf4j
 @Service
 public class FileInfoService {
