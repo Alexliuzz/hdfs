@@ -44,7 +44,10 @@
     <table class="layui-hide" id="fileTable" lay-filter="fileTable"></table>
 </div>
 
-<div id="fileIcon" class="display layui-row"></div>
+<div id="iconList" class="layui-container display" style="text-align: center">
+    <div id="fileIcon" class="layui-row"></div>
+    <div id="page" style="margin-top: 100px"></div>
+</div>
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
@@ -67,20 +70,24 @@
 
 <script type="text/html" id="fileIconTpl">
     {{# layui.each(d.data, function(index, item) { }}
-    <div class="layui-col-xs3" style="margin-top: 10px;text-align: center">
-        <img src="/img/icon/pdf.png" alt="fileIcon">
-        <h3>{{ item.fileName }}</h3>
+    <div class="layui-col-xs3" style="margin-top: 45px; text-align: center">
+        <img src="/img/icon/{{ item.fileType }}.png" alt="fileIcon">
+        <h3 style="margin-top: 5px">{{ item.fileName }}</h3>
     </div>
     {{# }) }}
 </script>
 
 <script type="text/javascript">
-    layui.use(['table', 'jquery', 'layer', 'laydate', 'laytpl'], function () {
+    layui.use(['table', 'jquery', 'layer', 'laydate', 'laytpl', 'laypage'], function () {
         var table = layui.table
             , $ = layui.jquery
             , layer = layui.layer
             , laydate = layui.laydate
-            , laytpl = layui.laytpl;
+            , laytpl = layui.laytpl
+            , laypage = layui.laypage;
+
+        var currPage = 1
+            , dataCount = 0;
 
         var fileIconTpl = document.getElementById('fileIconTpl').innerHTML,
             fileIcon = document.getElementById('fileIcon');
@@ -95,9 +102,9 @@
             range: true
         });
 
-        if(sessionStorage.getItem("showType") === "list") {
+        if (sessionStorage.getItem("showType") === "list") {
             setListShow();
-        }else {
+        } else {
             setIconShow();
             iconReload();
         }
@@ -142,12 +149,26 @@
             var fileName = $("[name='fileName']").val()
                 , fileDesc = $("[name='fileDesc']").val()
                 , timeRange = $("[name='timeRange']").val();
-            $.get("/file/list?fileName=" + fileName + "&fileDesc=" + fileDesc + "&timeRange=" + timeRange, function (res) {
+            $.get("/file/list?fileName=" + fileName + "&fileDesc=" + fileDesc
+                + "&timeRange=" + timeRange + "&limit=16&page=" + currPage, function (res) {
                 if (res.code !== 0) {
                     layer.alert(res.msg);
                 } else {
+                    dataCount = res.count;
                     laytpl(fileIconTpl).render(res, function (html) {
                         fileIcon.innerHTML = html;
+                    });
+                    laypage.render({
+                        elem: 'page'
+                        , count: dataCount //数据总数
+                        , curr: currPage
+                        , jump: function (obj, first) {
+                            currPage = obj.curr;
+                            console.log(obj);
+                            if (!first) {
+                                iconReload();
+                            }
+                        }
                     });
                 }
             })
@@ -172,19 +193,19 @@
             iconReload();
         });
 
-        function setListShow(){
+        function setListShow() {
             sessionStorage.setItem("showType", "list");
             $('#list').removeClass('layui-btn-primary').addClass('layui-btn-normal');
             $('#icon').removeClass('layui-btn-normal').addClass('layui-btn-primary');
-            $('#fileIcon').addClass('display');
+            $('#iconList').addClass('display');
             $('#fileList').removeClass('display');
         }
 
-        function setIconShow(){
+        function setIconShow() {
             sessionStorage.setItem("showType", "icon");
             $('#icon').removeClass('layui-btn-primary').addClass('layui-btn-normal');
             $('#list').removeClass('layui-btn-normal').addClass('layui-btn-primary');
-            $('#fileIcon').removeClass('display');
+            $('#iconList').removeClass('display');
             $('#fileList').addClass('display');
         }
 
